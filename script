@@ -1,0 +1,121 @@
+
+DROP DATABASE Foody;
+CREATE DATABASE Foody ;
+
+use Foody;
+
+CREATE TABLE Categorie(
+CodeCateg INT PRIMARY KEY,
+NomCateg VARCHAR(30) NOT NULL,
+Description VARCHAR(250) NOT NULL
+) ENGINE=InnoDB ;
+
+CREATE TABLE Client (
+CodeCli VARCHAR(30) PRIMARY KEY,
+Société VARCHAR(50), 
+Contact VARCHAR(100),
+Fonction VARCHAR(30),
+Adresse VARCHAR(100),
+Ville VARCHAR(30),
+Region VARCHAR(30),
+CodePostal VARCHAR(30),
+Pays VARCHAR(30),
+Tel VARCHAR(30),
+Fax VARCHAR(30)
+) ENGINE=InnoDB ;
+
+CREATE TABLE Messager (
+NoMess INT PRIMARY KEY AUTO_INCREMENT,
+NomMess VARCHAR(30) NOT NULL,
+Tel VARCHAR(30) NOT NULL
+) ENGINE=InnoDB ;
+
+CREATE TABLE Employe (
+NoEmp INT PRIMARY KEY AUTO_INCREMENT,
+Nom VARCHAR(30) NOT NULL,
+Prenom VARCHAR(30) NOT NULL,
+Fonction VARCHAR(30) NOT NULL,
+TitreCourtoisie VARCHAR(30) NOT NULL,
+DateNaissance DATETIME,
+DateEmbauche DATETIME,
+Adresse VARCHAR(100) NOT NULL,
+Ville VARCHAR(30),
+Region VARCHAR(30),
+Codepostal VARCHAR(30),
+Pays VARCHAR(30),
+TelDom VARCHAR(30),
+Extension VARCHAR(30),
+RendCompteA INT,
+CONSTRAINT FK_RendCompteA FOREIGN KEY (RendCompteA) REFERENCES Employe (NoEmp)
+) ENGINE=InnoDB ;
+
+CREATE TABLE Commande (
+NoCom INT PRIMARY KEY,
+CodeCli VARCHAR(30),
+NoEmp INT,
+DateCom DATETIME,
+ALivAvant DATETIME, 
+DateEnv DATETIME,
+NoMess INT,
+Port FLOAT,
+Destinataire VARCHAR(100),
+AdrLiv VARCHAR(100),
+VilleLiv VARCHAR(30),
+RegionLiv VARCHAR(30),
+CodePostalLiv VARCHAR(30),
+PaysLiv VARCHAR(30),
+CONSTRAINT FK_NoMess FOREIGN KEY (NoMess) REFERENCES Messager (NoMess),
+CONSTRAINT FK_NoEmp FOREIGN KEY (NoEmp) REFERENCES Employe (NoEmp),
+CONSTRAINT FK_CodeCli FOREIGN KEY (CodeCli) REFERENCES Client (CodeCli)
+) ENGINE=InnoDB ;
+
+CREATE TABLE Fournisseur(
+NoFour INT PRIMARY KEY AUTO_INCREMENT,
+Societe VARCHAR(50) NOT NULL,
+Contact VARCHAR(30) NOT NULL,
+Fonction VARCHAR(30) NOT NULL,
+Adresse VARCHAR(100) NOT NULL,
+Ville VARCHAR(30) NOT NULL,
+Region VARCHAR(30),
+CodePostal  VARCHAR(30),
+Pays VARCHAR(30),
+Tel  VARCHAR(30),
+Fax  VARCHAR(30),
+PageAccueil VARCHAR(100)
+) ENGINE=InnoDB ;
+
+CREATE TABLE Produit (
+Refprod INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+Nomprod VARCHAR(100),
+NoFour INT,
+CodeCateg INT,
+QteParUnit  VARCHAR(30),
+PrixUnit INT,
+UnitesStock INT,
+UnitesCom INT,
+NiveauReap INT,
+Indisponible INT,
+CONSTRAINT FK_NoFour FOREIGN KEY (NoFour) REFERENCES Fournisseur (NoFour),
+CONSTRAINT FK_CodeCateg FOREIGN KEY (CodeCateg) REFERENCES Categorie (CodeCateg)
+) ENGINE=InnoDB ;
+
+CREATE TABLE DetailCommande (
+NoCom INT NOT NULL,
+RefProd INT NOT NULL,
+PrixUnit FLOAT,
+Qte INT,
+Remise FLOAT,
+PRIMARY KEY (NoCom, RefProd),
+CONSTRAINT FK_NoCom FOREIGN KEY (NoCom) REFERENCES Commande (NoCom),
+CONSTRAINT FK_RefProd FOREIGN KEY (RefProd) REFERENCES Produit (RefProd)
+) ENGINE=InnoDB ;
+
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/categorie.csv' INTO TABLE Categorie FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/client.csv' INTO TABLE Client FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/messager.csv' INTO TABLE Messager FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/employe.csv' INTO TABLE Employe FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/fournisseur.csv' INTO TABLE Fournisseur FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/produit.csv' INTO TABLE Produit FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/commande.csv' INTO TABLE Commande FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '/Users/aliciaderradji/Desktop/Simplon-2022/Foody/data/detailsCommande.csv' INTO TABLE DetailCommande FIELDS TERMINATED BY "," LINES TERMINATED BY "\n" IGNORE 1 LINES;
+
